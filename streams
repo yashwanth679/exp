@@ -1,0 +1,62 @@
+import java.util.*;
+import java.util.stream.*;
+
+class Product {
+    private int id;
+    private String name;
+    private double price;
+    private String type;
+    private double rating;
+
+    public Product(int id, String name, double price, String type, double rating) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.type = type;
+        this.rating = rating;
+    }
+
+    // Getters
+    public int getId() { return id; }
+    public String getName() { return name; }
+    public double getPrice() { return price; }
+    public String getType() { return type; }
+    public double getRating() { return rating; }
+
+    public static void main(String[] args) {
+        List<Product> products = new ArrayList<>();
+        products.add(new Product(1, "Laptop", 1200.00, "Electronics", 4.5));
+        products.add(new Product(2, "TV", 1500.00, "Electronics", 4.3));
+        products.add(new Product(3, "Headphones", 80.00, "Electronics", 3.8));
+        products.add(new Product(4, "Shoes", 70.00, "Fashion", 4.7));
+        products.add(new Product(5, "Watch", 200.00, "Fashion", 4.2));
+        products.add(new Product(6, "Phone", 900.00, "Electronics", 4.9));
+
+        // i) Find all the products having rating between 4 and 5
+        List<Product> highRatedProducts = products.stream()
+                .filter(product -> product.getRating() >= 4 && product.getRating() <= 5)
+                .collect(Collectors.toList());
+        System.out.println("Products with rating between 4 and 5: " + highRatedProducts);
+
+        // ii) Find first n products having price > 10000
+        int n = 2;
+        List<Product> expensiveProducts = products.stream()
+                .filter(product -> product.getPrice() > 10000)
+                .limit(n)
+                .collect(Collectors.toList());
+        System.out.println("First " + n + " products with price > 10000: " + expensiveProducts);
+
+        // iii) Find the number of products under each type (map containing type and count)
+        Map<String, Long> productCountByType = products.stream()
+                .collect(Collectors.groupingBy(Product::getType, Collectors.counting()));
+        System.out.println("Product count by type: " + productCountByType);
+
+        // iv) Find average rating of products with type = "Electronics"
+        Double averageRatingElectronics = products.stream()
+                .filter(product -> product.getType().equals("Electronics"))
+                .mapToDouble(Product::getRating)
+                .average()
+                .orElse(0.0);
+        System.out.println("Average rating of products with type Electronics: " + averageRatingElectronics);
+    }
+}
